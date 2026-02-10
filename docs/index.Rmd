@@ -1,0 +1,270 @@
+---
+title: "MSE Tools for Short-Lived Species"
+author: "Tom Carruthers <tom@bluematterscience.com>"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_document:
+    number_sections: yes
+    toc: true
+    toc_float: true
+always_allow_html: yes
+---
+&nbsp;
+
+
+<style>
+  .col2 {
+    columns: 2 200px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 200px; /* chrome, safari */
+    -moz-columns: 2 200px;    /* firefox */
+  }
+  .col3 {
+    columns: 3 100px;
+    -webkit-columns: 3 100px;
+    -moz-columns: 3 100px;
+  }
+  .col4 {
+    columns: 4 100px;
+    -webkit-columns: 4 100px;
+    -moz-columns: 4 100px;
+  }
+</style>  
+  
+<style type="text/css">
+
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+body{ /* Normal  */
+   font-size: 12px;
+}
+td {  /* Table  */
+   font-size: 11px;
+}
+h1 { /* Header 1 */
+ font-size: 18px;
+ color: DarkBlue;
+}
+h2 { /* Header 2 */
+ font-size: 15px;
+ color: DarkBlue;
+}
+h3 { /* Header 3 */
+ font-size: 14px;
+ color: DarkBlue;
+}
+code.r{ /* Code block */
+  font-size: 10px;
+}
+pre { /* Code block */
+  font-size: 10px;
+  overflow-x: auto;
+}
+</style>
+
+
+***
+
+<img src="img/Front Page.jpg" width = 910>
+
+***
+
+&nbsp;
+
+<img src="img/BM.jpg" width="140">
+<img src="img/openMSE.jpg" width="150">
+<img src="img/Pew.jpg" width="140">
+
+
+
+***
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(kableExtra)
+library(readxl)
+
+knitr::opts_chunk$set(echo = FALSE)
+
+maketab <- function(dir,Alab="Statistical Area"){
+  filenam = list.files(dir)
+  nf = length(filenam)
+  DF = data.frame(filenam)
+  names(DF) = c("Area")
+  #filepath = list.files(dir, full.names = T, include.dirs = T)
+  fit.link = paste0('<a href=', file.path(dir, filenam), '> ', DF$Area , ' </a>')
+  DF$Area <- fit.link
+  DT::datatable(DF, escape=1,
+                colnames=c(Alab),
+                filter = 'top',
+                options = list(
+                  pageLength = 10, 
+                  autoWidth = TRUE,
+                  sDom  = '<"top">lrt<"bottom">ip'))
+}
+
+
+
+getprojectinfo<-function(page){
+  tab=as.data.frame(read_excel("Project_Info/Status Assumptions To do.xlsx", sheet = page))
+  tab=tab[,2:3]
+  tab[is.na(tab)]=""
+  kable(tab,"simple")#,col.names=rep("",2)) 
+}
+  
+
+getprog<-function(page){
+  tab=as.data.frame(read_excel("Project_Info/Progress.xlsx", sheet = page))
+  tab=tab[,2:3]
+  tab[is.na(tab)]=""
+  kable(tab,"simple")#,col.names=rep("",2)) 
+}
+  
+
+
+
+```
+
+
+# Overview
+
+The management of short-lived species is challenging: a small number of cohorts can generate high natural variability, data lags can prevent appropriately responsive management, environmental drivers of stock status may mask management performance and seasonality in recruitment, growth and survival may need to be accounted for. 
+
+Management Strategy Evaluation is tool widely applied in the testing of candidate management procedures but such frameworks are commonly designed on an annual resolution that is often not appropriate to the stock and fishery dynamics of short-lived species. 
+
+This project develops a suite of methods for developing operating models and designing management procedures for short-lived species that often rely on in-season data and management. 
+
+
+<br>
+
+***
+
+# Project details
+
+```{r ProjDets, eval=T}
+dat<-data.frame(c("Term","Funder","Stream","Contract ID #.","PO #","Project Partner","Blue Matter Team","Pew Collaborators"),
+                
+                 c("January 2026 - September 2028",
+                   "Pew Charitable Trusts",
+                   "Pew International Fisheries",
+                   "39050",
+                   "18501",
+                   "Blue Matter Science Ltd.",
+                   "Tom Carruthers, Adrian Hordyk, Quang Huynh",
+                   "Ashley Wilson"))
+
+kable(dat,"simple",col.names=rep("",2)) 
+ 
+
+```
+
+<br>
+
+***
+
+# Objective
+
+To develop methods that facilitate the MSE testing of Management Procedures for short-lived species such as squid, shrimp and small pelagics. 
+
+<br>
+
+***
+
+# Introduction
+
+For many fish stocks, population and fishery dynamics are approximated well by models that have an annual time step. These stocks typically have annual recruitment and annual data collection. The population comprises many cohorts and recent data may be informative about current stock status and management recommendations may be suitably responsive. Since management recommendations are often aligned with annual timesteps (e.g., ‘2027 TAC advice will remain constant at 2026 levels’) most stock assessment models are specified on an annual time step. 
+Qualitatively, we define a short-lived species as one that may not be approximated well by annual population and fishing dynamics and may require the use of in-season data. In broad quantitative terms this is defined as a species that naturally lives for less than three years; has an annual instantaneous mortality of greater than 1.0 whereby 95% of individuals naturally die before 36 months. Examples of such species include most stocks of shrimp, squid, octopus and anchovy. 
+
+Longevity is not the issue per se, the management challenges arise due to the resolution of recruitment, data collection and management decision making. For example, a fish that lives to one year and has monthly recruitment, data collection and management is no different mathematically than a fish that lives to 12 years and has annual recruitment data collection and management decision making. However, consider a fish such as a sardine that lives to three years, recruits in one month of the year and uses data from the previous year for management decision making. That is analogous to a bluefin tuna (lives to 36 years) that recruits every 12 years, sets advice from data from 12 years ago (the data point before that is 24 years ago) and for which management will be kept constant for 12 years at a time. A retrospective analysis of TAC management for such a stock would almost certainly show unacceptable management performance due to those data lags and unresponsive management (unless a very conservative TAC was prescribed).
+
+It follows that the ‘short-lived fishery problem’ is multifaceted and includes on or more of the following:
+
+*	High natural variability in stock level due to few cohorts (perhaps only one) limiting forecasting certainty and lessening impact of alternative management options;
+
+*	Data lags that span a high degree of uncertainty in stock status (available data may be uninformative about an appropriate current management policy);
+
+*	Management that does not occur frequently enough to adequately respond to changes in stock and fishery dynamics; 
+
+*	Environmental drivers of stock level may be more influential than management decisions;
+
+*	Conventional fisheries management reference points that may not be suitable. 
+
+
+&nbsp;
+
+***
+
+# Methods
+
+## Specifying Seasonal Operating Models
+
+## Developing In-Season Management Procedures
+
+## Including Environmental Drivers of Stock Productivity
+
+## Quantifying Appropriate Fishery Management Reference Points
+
+
+<br>
+
+***
+
+# Examples
+
+## Neon Flying Squid
+
+## Jumbo Flying Squid
+
+## Deep Water Red Shrimp
+
+<br>
+
+***
+
+# References
+
+
+<br>
+
+***
+
+# Acknowledgements
+
+
+
+&nbsp;
+
+***
+
+# Appendix: Operating Models
+
+An operating model is a theoretical description of fishery and population dynamics used for the testing of management strategies that could include, for example,  data collection protocols, stock assessment methods, harvest control rules, enforcement policies and reference points. In fisheries, operating models are used in closed-loop simulation to test management procedures (aka. harvest strategy) accounting for feedback among the system, data, management procedure and implementation. A management procedure is a rule that calculates management advice from data. Management Strategy Evaluation uses closed-loop simulation of management procedures as a core technical component but is a wider process of stakeholder and manager engagement that identifies system uncertainties, performance metrics, viable management procedures, ultimately aiming to adopt an MP for the provision of management advice for an established time period. 
+
+&nbsp;
+
+## Reference Case Operating Models
+
+The reference case operating model is used as the single 'base' operating model from which reference set and robustness set operating models are specified. Reference and robustness tests are typically 1-factor departures from the reference case OM, however sometimes reference set OMs are organized in a factorial grid across primary axes of uncertainty. 
+
+&nbsp;
+
+## Reference Set Operating Models
+
+Reference set operating models span a plausible range of the core uncertainties for states of nature. These are often the types of alternative parameterizations or assumptions that would be included in a stock assessment sensitivity analysis. 
+
+The role of the reference set operating models is to provide the central basis for evaluating the performance of candidate management procedures, for example rejecting badly performing harvest strategies. 
+
+&nbsp;
+
+## Robustness Set Operating Models
+
+Robustness set operating models are intended to include additional sources of uncertainty for providing further discrimination among management procedures that perform comparably among reference set operating models. 
+
+Robustness operating models often represent system states of nature that are not empirically informed or are hypotheses of a subset of stakeholders.
+
+&nbsp;
+***
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
