@@ -200,18 +200,40 @@ SL_fleet_check = function(fleet){
 
 }
 
+#' Construct Complete Short-Lived Species Operating Model
+#'
+#' A function that combines stock and fleet object in a complete operating model for a short-lived species. Can
+#' include lists of fleets and stocks for more complex operating models
+#'
+#' @param Name Character string. The name of the operating model. E.g., "NP NFS Ref OM #3: high M, high h, low rec"
+#' @param Agency Character string. The relevant fishery agency "North Pacific Fishery Council (NPFC)"
+#' @param Author Character string. Name of the author(s) of the operating model E.g., "A. Person"
+#' @param Email Character string. Email address of the corresponding author
+#' @param Region Character string. The location of the stock / management area.
+#' @param Latitude Real number. Degrees N. Negative is southern hemisphere
+#' @param Longitude Real number. Degrees E. Negative is western hemisphere
+#' @param Sponsor Character string. The name of the person(s) or organization(s) that paid for the research.
+#' @param nSim Positive Integer. The number of independent simulations. E.g., 4 for testing, 24 for preliminary results, 48 for representative results, 192+ for informing management.
+#' @param nYear Positive Integer. The number of historical years. E.g., 10, (2015 - 2024)
+#' @param pYear  Positive Integer. The number of projection years. E.g., 10 (2025 - 2034)
+#' @param Seasons Positive Integer. The number of sub-year time steps. E.g., 12 for a monthly model
+#' @param CurrentYear Integer. The Calendar year of the last historical year. E.g. 2024.
+#' @param Interval Positive integer. The management interval (in seasons) - how frequently is new advice provided. In a monthly model, a value of 6 would mean every 6 months after June and December.
+#' @param Seed Real number. The seed for sampling of random variables.
+#' @param stock A stock object or list of stock objects
+#' @param fleet A fleet object or list of fleet objects
+#' @return An object of MSEtool class om
+#' @author T. Carruthers
+#' @examples
+#' A_short_lived_om <- make_SL_om("Default fleet values for demo")
+#' class(A_short_lived_om)
+#' @seealso \link{make_SL_stock} for making a short-lived stock object and \link{spec_SL_om} for specifying the entire operating model from fleet and stock objects.
+#' @export
 
-spec_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agency", Author = "A fishery analyst",
-                 rec_age = 4, nages = 24, PlusGroup = F,
-                 spawndist = c(0, 0, 0.1, 0.5, 0.3, 0.2, 0, 0, 0, 0, 0, 0),
-                 Linf = 1, K = 0.2, t0 = 0, Len_CV = 0.2, a = 1, b = 3,
-                 M = 0.2, amat50 = 6, amatSLP = 2,
-                 h = 0.9, sigmaR = 1.0, trunc_sigmaR = 2.0, R_AC = 0.5,
-                 nareas = 2,
-                 Frac_area = matrix(c(0.95,0.9,0.85,0.8,0.75,0.7,0.65,0.6,0.55,0.5,0.5,0.5,0.45,0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05),nrow=1),
-                 prob_stay = 0.9,
-                 Effort = array(NA, c(1,1,1)), sel50 = 6, selSLP = 2
-                 ){
+make_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agency", Author = "A fishery analyst",
+                 Email = "a.person@email.com", Region = "A fishery management area", Latitude = NA, Longitude = NA,
+                 Sponsor = "A generous funder", nSim = 4, nYear = 10, pYear = 10, Seasons = 12, CurrentYear = 2026,
+                 Interval = 6, Seed = 1, stock = NA, fleet = NA){
 
   # Name = "Short-lived simulation"; Agency = "A fishery agency"; Author = "A fishery analyst"; Species = "Shortus liveus"; CommonName = "Short-lived creature"
 
@@ -231,7 +253,7 @@ spec_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agenc
   om@pYear = pYear
   om@CurrentYear = CurrentYear
   om@Seasons = Seasons
-  om@Interval = 1
+  om@Interval = 6
   om@Seed = 1
 
   # Observation model --------------------------------------------------------------
@@ -250,10 +272,15 @@ spec_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agenc
   om@Imp = imp
 
   # Populate stock and fleet slots -------------------------------------------------
+
+  if(!(class(stock)%in%c("list","stock")))stock = make_SL_stock()
+  if(!(class(fleet)%in%c("list","fleet")))fleet = make_SL_fleet()
+
   om@Stock = stock
   om@Fleet = fleet
 
   # hist = Simulate(om)
+
   om
 
 }
