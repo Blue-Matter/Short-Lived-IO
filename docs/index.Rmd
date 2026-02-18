@@ -263,6 +263,14 @@ The primary target audiences for this work include:
 
 ## Specifying Seasonal Operating Models
 
+### Age-specific movement
+
+### Intermittent recruitment
+
+### Projecting recruitment
+
+
+
 ## Developing In-Season Management Procedures
 
 ## Including Environmental Drivers of Stock Productivity
