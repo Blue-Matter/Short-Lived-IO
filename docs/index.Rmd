@@ -261,15 +261,33 @@ The primary target audiences for this work include:
 
 # Methods
 
-## Specifying Seasonal Operating Models
+## Suggested Methodological Steps
 
-### Age-specific movement
+1. Simulation of Fishery Dynamics
 
-### Intermittent recruitment
+2. Operating Model Conditioning
 
-### Projecting recruitment
+3. Management Procedure Development and Testing
+
+4. Presentation of Management Strategy Evaluation Results
 
 
+## Installation
+
+Following testing, application and review, the short-lived tools will included in the MSEtool package of the OpenMSE libraries. Until then they can be installed from the SLtools library: 
+
+
+## Specifying Seasonal Operating Models for Simulating Data
+
+### A single species, single fleet model with age-specific distribution and seasonal recruitment
+
+### A Growth-Type-Group model with single fleet dynamics
+
+## Simulation Testing Assessment Models
+
+## Conditioning an operating model 
+
+## Specifying Projection dynamics
 
 ## Developing In-Season Management Procedures
 
@@ -309,7 +327,9 @@ NPFC, 2025. NPFC-2025-SSC NFS02-IP06Management Strategy Evaluation for Short-Liv
 
 # Acknowledgements
 
+Funding support for this project was provided by The Pew Charitable Trusts. However, the views expressed herein are those of the authors and do not necessarily reflect the views of The Pew Charitable Trusts.
 
+Contact point for Pew Charitable Trusts - Ashley Wilson, Science Officer, International Fisheries (awilson@pewtrusts.org).
 
 &nbsp;
 

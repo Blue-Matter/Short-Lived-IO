@@ -51,22 +51,19 @@ make_SL_stock = function(Name = "A short-lived creature", Species = "Shortus liv
                          nYear = 10, pYear = 10, Seasons = 12, CurrentYear = 2026, nSim = 4,
                          rec_age = 4, nages = 24, PlusGroup = F,
                          spawndist = c(0, 0, 0.1, 0.5, 0.3, 0.2, 0, 0, 0, 0, 0, 0),
-                         Linf = 1, K = 0.2, t0 = 0, Len_CV = 0.2, a = 1, b = 3,
+                         Linf = 1, K = 0.2, t0 = 0, Len_CV = 0.2, a = 1E-5, b = 3,
                          M = 0.2, amat50 = 6, amatSLP = 2,
                          h = 0.9, sigmaR = 1.0, trunc_sigmaR = 2.0, R_AC = 0.5, R0 = 1E6,
                          nareas = 2, Frac_area = matrix(c(0.95,0.9,0.85,0.8,0.75,0.7,0.65,0.6,0.55,0.5,0.5,0.5,0.45,0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05),nrow=1),
                          prob_stay = 0.9){
 
   # Default args for testing:
-  # Name = "A short-lived creature"; Species = "Shortus liveus"; CommonName = "Short-lived creature",
-  # nYear = 10; pYear = 10; Seasons = 12; CurrentYear = 2026; nSim = 4
-  # rec_age = 4; nages = 24; PlusGroup = F
-  # Linf = 1; K = 0.2; t0 = 0; Len_CV = 0.2; a = 1; b = 3
-  # M = 0.2; amat50 = 6; amatSLP = 2;
-  # h = 0.9; sigmaR = 1.0; trunc_sigmaR = 2.0; R_AC = 0.5
-  # nareas = 2;  prob_stay = 0.9
-  # Frac_area = matrix(c(0.95,0.9,0.85,0.8,0.75,0.7,0.65,0.6,0.55,0.5,0.5,0.5,0.45,0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05),nrow=1)
-  # prob_stay = 0.9
+  # Name = "A short-lived creature"; Species = "Shortus liveus"; CommonName = "Short-lived creature"
+  # nYear = 10; pYear = 10; Seasons = 12; CurrentYear = 2026; nSim = 4; rec_age = 4; nages = 24; PlusGroup = F
+  # Linf = 1; K = 0.2; t0 = 0; Len_CV = 0.2; a = 1; b = 3; M = 0.2; amat50 = 6; amatSLP = 2;
+  # h = 0.9; sigmaR = 1.0; trunc_sigmaR = 2.0; R_AC = 0.5; nareas = 2;  prob_stay = 0.9
+  # prob_stay = 0.9; Frac_area = matrix(c(0.95,0.9,0.85,0.8,0.75,0.7,0.65,0.6,0.55,0.5,0.5,0.5,0.45,0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05),nrow=1)
+
 
   # pre calcs
   na = nages - rec_age + 1
@@ -85,40 +82,51 @@ make_SL_stock = function(Name = "A short-lived creature", Species = "Shortus liv
   stock@nSim = nSim
 
   # Ages
-  stock@Ages = Ages(MaxAge = nages, MinAge = rec_age, Units = "Month", PlusGroup = F)
+  stock@Ages = Ages(MaxAge = nages, MinAge = rec_age, Units = "month", PlusGroup = F)
 
   # Length
   Length = new('length')
+  #Length@Model = "vonBert"
+  #Length@Pars = list(Linf = rep(Linf,2), K = rep(K, 2), t0 = rep(t0, 2))
   Length@MeanAtAge = Linf * 1-exp(-K * ((rec_age:nages)-t0))
+  Length@Units = "mm"
   Length@CVatAge = rep(Len_CV, na)
+  Length@Dist = "normal"
+  Length@TruncSD = 2
   stock@Length = Length
 
   # Weight
   Weight = new('weight')
+  #Weight@Model = ExampleOM@Stock@Weight@Model #   NULL #MSEtool::WeightatMeanLength()
+  #Weight@Pars = list(alpha = a, beta = b)
   Weight@MeanAtAge = a * Length@MeanAtAge ^ b
-  Weight@Units = "Kg"
+  Weight@Units = "g"
+  Weight@Dist = "lognormal"
+  Weight@TruncSD = 2
   stock@Weight = Weight
 
   # Natural Mortality
   stock@NaturalMortality = NaturalMortality(MeanAtAge = rep(M,na))
 
   # Maturity
-  avec = ((rec_age : nages)-amat50)*amatSLP
+  avec = ((rec_age : nages)-amat50) * amatSLP
   stock@Maturity = Maturity(MeanAtAge = exp(avec)/(1+exp(avec)))
+  #stock@Maturity = Maturity(Pars = list(L50 = amat50, L50_95 = amat50/10))
+
 
   # Stock-Recruitment
-  stock@SRR = SRR(Pars = list(h=h, R0 = R0), SD = sigmaR, AC = R_AC, TruncSD = trunc_sigmaR)
+  stock@SRR = SRR(Model = "BevertonHolt", Pars = list(h = h), R0 = R0, SD = sigmaR, AC = R_AC, TruncSD = trunc_sigmaR)
 
   # Spatial
   # nSim, nArea, nArea, nAge, and nTS,
-  Movement = array(0,c(1,nareas,nareas,na))
+  Movement = array(0,c(1,nareas,nareas,na,1))
   dist1 = c(Frac_area[,1],1-sum(Frac_area[,1]))
-  Movement[1,,,1] = matrix(dist1,ncol=nareas,nrow=nareas,byrow=T) # Initial movement is fully mixed
+  Movement[1,,,1,1] = matrix(dist1,ncol=nareas,nrow=nareas,byrow=T) # Initial movement is fully mixed
   for(aa in 2:na){
     fracsin = c(Frac_area[,aa-1],1-sum(Frac_area[,aa-1]))
     fracsout = c(Frac_area[,aa],1-sum(Frac_area[,aa]))
     movout = get_mov_D(fracsin, fracsout, prob = rep(prob_stay,nareas))
-    Movement[1,,,aa] = movout$mov
+    Movement[1,,,aa,1] = movout$mov
   }
   stock@Spatial = Spatial(Movement=Movement)
 
@@ -154,7 +162,7 @@ SL_stock_check = function(stock){
 #' @param nSim Positive Integer. The number of independent simulations. E.g., 4 for testing, 24 for preliminary results, 48 for representative results, 192+ for informing management.
 #' @param rec_age Positive Integer. The age the fish is recruited (in seasonal time steps). E.g., given a monthly model (Seasons = 12) a value of 4 means that the stock recruitment function calculates recruiment into the time step 4 months later.
 #' @param nages Positive Integer. The number of seasonal time steps that population dynamics will be calculated for. E.g., 24 would be two years in a monthly model. Note that this only necessary if creatures live that long or dynamics are not suitably approximated with a plus group.
-#' @param Effort A matrix of positive real numbers nSim x time steps (nYear x Seasons). Given a default q value of 1 this is the apical fishing mortality rate.
+#' @param Effort A matrix of positive real numbers nSim x time steps (nYear x Seasons). Given a default q value of 1 this is the apical fishing mortality rate. Defaul is 'NA' and in this case effort pattern is simulated with a seasonal and temporal trend.
 #' @param sel50 Positive real number. The age (in seasons) that 50% of individuals are selected, in a logistic selectivity model. E.g., 6 in a monthly model would be 50% selected after 6 months.
 #' @param selSLP Positive real number. The slope of the logistic selectivity model. E.g., 2 in a monthly model.
 #' @return An object of MSEtool class fleet
@@ -181,10 +189,12 @@ make_SL_fleet = function(Name = "A fleet", nYear = 10, pYear = 10, Seasons = 12,
   fleet@nSim = nSim
 
   if(class(Effort)!="array"){
-    fleet@Effort = Effort_sim(nSim, nYear, Seasons, nArea, ymin = 0.25, yfac = 0.5, ECV = 0.15, maxF = 0.1, plot=T)
+    Effort = Effort_sim(nSim, nYear, Seasons, nArea, ymin = 0.25, yfac = 0.5, ECV = 0.15, maxF = 0.1, plot=T)
   }
+  fleet@Effort = Effort(Effort=Effort)
 
-  fleet@Catchability = 1
+  fleet@Catchability = Catchability(Efficiency = 1)
+
   svec = ((rec_age : nages)-sel50)*selSLP
   fleet@Selectivity = Selectivity(MeanAtAge = exp(svec)/(1+exp(svec)))
 
@@ -229,7 +239,6 @@ SL_fleet_check = function(fleet){
 #' class(A_short_lived_om)
 #' @seealso \link{make_SL_stock} for making a short-lived stock object and \link{spec_SL_om} for specifying the entire operating model from fleet and stock objects.
 #' @export
-
 make_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agency", Author = "A fishery analyst",
                  Email = "a.person@email.com", Region = "A fishery management area", Latitude = NA, Longitude = NA,
                  Sponsor = "A generous funder", nSim = 4, nYear = 10, pYear = 10, Seasons = 12, CurrentYear = 2026,
@@ -258,18 +267,18 @@ make_SL_om = function(Name = "Short-lived simulation", Agency = "A fishery agenc
 
   # Observation model --------------------------------------------------------------
 
-  obs = Obs()
-  obs@Landings@CV = 0.025
-  obs@Survey@CV = 0.1
-  obs@CAL@ESS = 200
-  om@Obs = obs
+  #obs = Obs()
+  #obs@Landings@CV = 0.025
+  #obs@Survey@CV = 0.1
+  #obs@CAL@ESS = 200
+  #om@Obs = obs
 
   # Implementation model -----------------------------------------------------------
 
-  imp = Imp()
-  imp@TAC@Mean=1
-  imp@TAC@SD = 0.001
-  om@Imp = imp
+  #imp = Imp()
+  #imp@TAC@Mean=1
+  #imp@TAC@SD = 0.001
+  #om@Imp = imp
 
   # Populate stock and fleet slots -------------------------------------------------
 
@@ -295,7 +304,7 @@ SL_spec_check=function(){
 Effort_sim = function(nSim, nYear, Seasons, nArea, ymin = 0.25, yfac = 0.5, ECV = 0.15, maxF = 0.1, plot=F){
   nt =  nYear*Seasons
   Effort = array(0,c(nSim,nt))
-  ye = 1 + ymin + (sin(((9+1:(nYear))/3))*0.5)
+  ye = 1 + ymin + (sin(((9+1:(nYear))/3))*1)
   se = dnorm(1:Seasons,Seasons/2,Seasons/5)
   seind = t(array(1:Seasons,c(nt,nSim)))
   yind = t(array(rep(1:nYear,each=Seasons),c(nt,nSim)))
