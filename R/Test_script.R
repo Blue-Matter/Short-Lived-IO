@@ -10,6 +10,5 @@ om = make_SL_om(stock=stock, fleet=fleet)
 
 hist = Simulate(om)
 
-
 saveRDS(om, "C:/temp/om_agevecs.rds")
 
