@@ -178,17 +178,17 @@ Through the delivery of public-facing scientific reports, open-source tools, and
 
 ## Management Challenges of Short-Lived Species
 
-For many fish stocks, population and fishery dynamics are approximated well by models that have an annual time step. These stocks typically have annual recruitment and annual data collection. The population comprises many cohorts and recent data may be informative about current stock status and management recommendations may be suitably responsive. Since management recommendations are often aligned with annual timesteps (e.g., ‘2027 TAC advice will remain constant at 2026 levels’) most stock assessment models are specified on an annual time step.
+For many fish stocks, population and fishery dynamics are approximated well by models that have an annual time step. These stocks typically have annual recruitment and annual data collection. The population comprises multiple cohorts and recent data may be informative about current stock status and management recommendations may be suitably responsive. Since management recommendations are often aligned with annual timesteps (e.g., ‘2027 TAC advice will remain constant at 2026 levels’) most stock assessment models are specified on an annual time step.
 
-Qualitatively, we define a short-lived species as one that may not be approximated well by annual population and fishing dynamics and may require the use of in-season data. In broad quantitative terms this is defined as a species that naturally lives for less than three years; has an annual instantaneous mortality of greater than 1.0 whereby 95% of individuals naturally die before 36 months. Examples of such species include most stocks of shrimp, squid, octopus and anchovy.
+For the purposes of this project, we define a short-lived species as one that may not be approximated well by annual population and fishing dynamics and may require the use of in-season data. In broad quantitative terms this is a species that naturally lives for less than three years; has an annual instantaneous mortality of greater than 1.0, for which 95% of individuals naturally die before 36 months. Examples of such species include most stocks of shrimp, squid, octopus and anchovy.
 
-The management challenges are not related to longevity per se, but instead arise due to the frequency of recruitment, data collection and management decision making. A fish that lives to one year and has monthly recruitment, data collection and management is no different mathematically than a fish that lives to 12 years and has annual recruitment data collection and management decision making. However most short-lived species are not managed on a monthly time step. Consider a fish such as a sardine that lives to three years, recruits in a single month of the year and uses data from the previous year for management decision making. That is mathematically equivalent to a  fish that lives to 36 years recruits every 12 years, sets advice from data from 12 years ago (the data point before that is 24 years ago) and for which management will be kept constant for 12 years at a time. Rephrased in those terms, it is easy to see why such management would be challenging. A retrospective analysis of TAC management for such a stock would almost certainly show unacceptable management performance due to those data lags and unresponsive management (unless a very conservative TAC was prescribed).
+The management challenges of such species are not related to longevity per se, but instead arise due to the relative frequencies of recruitment, data collection and management decision making. A fish that lives to one year and has monthly recruitment, monthly data collection and monthly management interventions is no different mathematically than a fish that lives to 12 years and has annual recruitment data collection and management decision making. However most short-lived species are not managed on a monthly time step. Consider a fish such as a sardine that lives to three years, recruits in a single month of the year and uses data from the previous year for management decision making. That is mathematically equivalent to a fish that lives to 36 years recruits every 12 years, sets advice from data from 12 years ago (the data point before that is 24 years ago) and for which management will be kept constant for 12 years at a time. Rephrased in those terms, it is easy to see why managing such a stock would be challenging. A retrospective analysis of TAC management for such a stock would almost certainly show unacceptable management performance due to those data lags and unresponsive management (unless a very conservative TAC was prescribed).
 
-It follows that the ‘short-lived management problem’ is multifaceted and includes on or more of the following:
+It follows that the ‘short-lived management problem’ is multifaceted and includes one or more of the following:
 
 *	High natural variability in stock level due to few cohorts (perhaps only one) limiting forecasting certainty and lessening impact of alternative management options;
 
-*	Data lags that span a high degree of uncertainty in stock status (available data may be uninformative about an appropriate current management policy);
+*	Data lags that span a high degree of uncertainty in stock status (available data may be 'out of date' and uninformative about an appropriate current management policy);
 
 *	Management that does not occur frequently enough to adequately respond to changes in stock and fishery dynamics; 
 
@@ -196,7 +196,8 @@ It follows that the ‘short-lived management problem’ is multifaceted and inc
 
 *	Conventional fisheries management reference points that may not be suitable. 
 
-## Squid
+
+## Squid Fisheries
 
 Squid are ecologically significant species that play important roles in marine ecosystems—as predators and as critical forage for higher trophic level species. Their populations are characterized by short lifespans (typically around one year), rapid growth, semelparous reproduction, and high natural mortality. These biological characteristics lead to strong and often unpredictable fluctuations in abundance that can be closely linked/driven by environmental variability.
 
@@ -205,6 +206,7 @@ Traditional stock assessment approaches used for longer-lived finfish often fall
 Moreover, environmental drivers such as sea temperature, climate indices (e.g., El Niño Southern Oscillation, North Atlantic Oscillation), and spatio-temporal variability are known to influence squid abundance and distribution. Some squid species display clear offshore-coastal distribution shifts during spawning periods, which has implications for spatial management and protection of spawning aggregations.
 
 In many instances squid fisheries do not have established monitoring and data collection programmes that facilitate management strategies that reflect their short-lived and environmentally driven fluctuations – making it challenging to have responsive/ sustainable management or even establishing suitable reference points for use by management.
+
 
 ## Management Strategy Evaluation (MSE)
 
@@ -227,14 +229,16 @@ This project builds on the growing recognition by regional fisheries management 
 
 ## Research Goals
 
-This research project aims to develop practical MSE tools that can support the design, evaluation, and potential adoption of effective, science-based harvest strategies (MPs) for squid and other species with similar short-lived, variable life histories. The project will develop a squid-specific MSE package within the openMSE platform that can be adapted for different fisheries, whether data-limited, data-moderate, or data-rich.
+This research project aims to develop tools that can support the design, evaluation, and potential adoption of effective, science-based management procedures (MPs, aka 'harvest strategies') for squid and other species with similar short-lived, variable life histories. The project will develop an  MSE package based on the openMSE platform that can be adapted for different fisheries, whether data-limited, data-moderate, or data-rich.
 
 By leveraging existing research and developing Operating Models (OMs) tailored to squid biology and fishery dynamics, the project seeks to provide flexible, accessible MSE tools that managers and scientists can use to develop MPs for squid stocks globally, regardless of their current data or assessment capacity. These tools will enable the development and evaluation of model-based and empirical MPs, which include management considerations that may be important for squid in-season catch/effort limit adjustments, spatial measures, and environmentally responsive strategies.
 
-A key focus will be to support the North Pacific Fisheries Commission (NPFC) and the South Pacific Regional Fisheries Management Organisation (SPRFMO) in advancing MSE for their main squid fisheries—specifically, the NPFC neon flying squid, NPFC Japanese flying squid, and the SPRFMO jumbo flying squid stocks. The project will also explore how improved monitoring strategies (e.g., enhanced data collection, reduced data lags, and more frequent in-season updates) might reduce uncertainty and improve management outcomes for these fisheries.
+A key focus will be to support the North Pacific Fisheries Commission (NPFC) and the South Pacific Regional Fisheries Management Organisation (SPRFMO) in advancing MSE for their main squid fisheries—specifically, the NPFC neon flying squid, NPFC Japanese flying squid, and the SPRFMO jumbo flying squid stocks. 
+
+The project will also explore how improved monitoring strategies (e.g., enhanced data collection, reduced data lags, and more frequent in-season updates) might reduce uncertainty and improve management outcomes for these fisheries.
 The project will provide:
 
-* A globally applicable short-lived MSE tool for openMSE.
+* A globally applicable short-lived MSE tool for OpenMSE.
 
 *	Case study applications and MSE analyses for NPFC and SPRFMO squid fisheries.
 
@@ -261,23 +265,56 @@ The primary target audiences for this work include:
 
 # Methods
 
-## Suggested Methodological Steps
+## Overview
+
+A collection of tools are available in a public slMSE R package that allow users to specify simulation models that can be used to test assessment methods (and operating model conditioning methods), and develop management procedures and then test those using the OpenMSE R libraries. 
+
+The intention of slMSE is to support a scientific process that begins with a collection of available data and information, leads to the consolidation of those in a range of plausible scenarios for system dynamics, this followed by a defensible assessment of the resource, and finally the development and potentially adoption of management procedures that are demonstrably robust to scientific and management uncertainties. 
+
+Data & information > (1) Simulated dynamics > (2) Assessment > (3) Management procedure
+
+
+<img src="img/Methods_overview.png" width = 710>
+
+Figure 1. Suggested methodological steps. 
 
 1. Simulation of Fishery Dynamics
 
-2. Operating Model Conditioning
+2. Assessment Evaluation Operating Model Conditioning
 
 3. Management Procedure Development and Testing
 
-4. Presentation of Management Strategy Evaluation Results
 
 
 ## Installation
 
-Following testing, application and review, the short-lived tools will included in the MSEtool package of the OpenMSE libraries. Until then they can be installed from the SLtools library: 
+The short-lived tools can be installed from the slMSE library: 
 
+```{r Installation, eval=F, echo=T}
+
+remotes::install_github('blue-matter/slMSE')
+library(slMSE)
+packageVersion(slMSE)
+slTest()
+
+```
 
 ## Specifying Seasonal Operating Models for Simulating Data
+
+```{r specOM, eval=F, echo=T}
+library(openMSE)
+packageVersion('MSEtool')
+source("C:/GitHub/Short-Lived-IO/R/SLSim.R")
+
+stock = make_SL_stock()
+fleet = make_SL_fleet()
+om = make_SL_om(stock=stock, fleet=fleet)
+
+hist = Simulate(om)
+
+```
+
+saveRDS(om, "C:/temp/om_agevecs.rds")
 
 ### A single species, single fleet model with age-specific distribution and seasonal recruitment
 
@@ -325,9 +362,19 @@ NPFC, 2025. NPFC-2025-SSC NFS02-IP06Management Strategy Evaluation for Short-Liv
 
 ***
 
+
 # Acknowledgements
 
-Funding support for this project was provided by The Pew Charitable Trusts. However, the views expressed herein are those of the authors and do not necessarily reflect the views of The Pew Charitable Trusts.
+<br>
+
+<span style="font-size: 1.05em; display: block; text-align: center;">Funding support for this project was provided by:
+
+<span style="font-size: 1.25em; display: block; text-align: center;">The Pew Charitable Trusts</span>
+
+
+&nbsp;&nbsp;&nbsp;
+
+The views expressed herein are those of the authors and do not necessarily reflect the views of The Pew Charitable Trusts.
 
 Contact point for Pew Charitable Trusts - Ashley Wilson, Science Officer, International Fisheries (awilson@pewtrusts.org).
 

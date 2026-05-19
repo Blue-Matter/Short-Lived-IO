@@ -17,7 +17,6 @@ hist = Simulate(om)
 
 
 
-
 la() # load all MSEtool
 OM = om
 parallel = FALSE
@@ -89,5 +88,7 @@ matplot(t(hist@SBiomass[,1,]),type="l",lty=2)
 dim(hist@Number$`A short-lived creature`)
 
 
-dim(om@Stock@Spatial@Movement@)
+# dim(om@Stock@Spatial@Movement@)
+
+saveRDS(om, "C:/temp/om_agevecs.rds")
 
