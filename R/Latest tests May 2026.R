@@ -1,17 +1,15 @@
-library(slMSE)
-packageVersion('MSEtool')
-packageVersion('slMSE')
+#library(slMSE)
+library(MSEtool)
+miceadds::source.all("C:/GitHub/slMSE/R")
+#packageVersion('MSEtool')
+#packageVersion('slMSE')
 
 
 # Single substock
 
-stock = slStock()
-fleet = slFleet()
-om = slOM(stock = stock, fleet = fleet)
+
+om = slOM()
 hist = Simulate(om)
-
-
-
 
 
 
@@ -95,6 +93,18 @@ fleet = slFleet(nYear = nyear, pYear = pYear, Seasons = Seasons)
 
 om = slOM(stock = list(small, medium, large), fleet = fleet)
 hist = Simulate(om)
+
+
+
+
+
+
+
+
+
+
+
+
 #mse = Project(hist, 'ECur')
 #slPlot(mse)
 
