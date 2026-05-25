@@ -8,7 +8,7 @@ small = slStock(Name = "Small Pacific JFS", Species = "Dosidicus gigas", CommonN
                 Len_CV = 0.2,
                 Wt_age = c(1.6, 3.0, 4.1, 4.9, 5.5, 5.8, 6.1, 6.2),           # Weight at age (kg)  # round(1E-4* (40 * (1-exp(-0.5*2:9)))^3,1)
                 M = 0.4,                                                      # Instantaneous natural mortality rate (per season)
-                Mat_age = c(0.14, 0.50, 0.86, 0.97, 1.00, 1.00, 1.00, 1.00),  # Spawning fraction at age ('maturity at age') # avec = ((1 : 8)-2) * 1.8; round(exp(avec)/(1+exp(avec)),2)
+                Mat_age = c(0.18, 0.60, 0.88, 0.99, 1.00, 1.00, 1.00, 1.00),  # Spawning fraction at age ('maturity at age') # avec = ((1 : 8)-2) * 1.8; round(exp(avec)/(1+exp(avec)),2)
                 SR_type = "Ricker", h = 0.9, sigmaR = 1.0, trunc_sigmaR = 2.0, R_AC = 0.5, R0 = 1E6,
                 nareas = nAreas,
                 Frac_area = matrix(c(0.90, 0.80, 0.75, 0.60, 0.45, 0.30, 0.25, 0.20,   # Area 1
@@ -52,3 +52,9 @@ large = slStock(Name = "Large Pacific JFS", Species = "Dosidicus gigas", CommonN
                                       0.90, 0.80, 0.75, 0.60, 0.45, 0.30, 0.25, 0.20),          # Area 3
                                     byrow = T, nrow=nAreas),
                  prob_stay = 0.8)                                                               # Tendency to remain in area
+
+
+stock = list(Small_Pacific_JFS = small, Medium_Pacific_JFS = medium, Large_Pacific_JFS = large)
+
+cat("Returing an list object 'stock' containing three morphs in a single species complex: small, medium and large JFS \n")
+

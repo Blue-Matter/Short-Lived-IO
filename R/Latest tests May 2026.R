@@ -1,10 +1,10 @@
 library(slMSE)
 packageVersion('slMSE')
 
+#  miceadds::source.all("C:/GitHub/slMSE/R")
+
 library(MSEtool)
 packageVersion('MSEtool')
-
-#miceadds::source.all("C:/GitHub/slMSE/R")
 
 # Single substock
 om = slOM()
@@ -22,22 +22,18 @@ nAges = 8
 nSim = 4
 CurrentYear = 2026
 
-source("C:/GitHub/Short-Lived-IO/R/Custom_stocks.R") # Three shortlived stocks
+source("C:/GitHub/Short-Lived-IO/R/Custom_stocks.R") # Three short-lived morphs
+source("C:/GitHub/Short-Lived-IO/R/Custom_fleets.R") # Two fleets with identical fishing dynamics among morphs
 
-fleet = slFleet(nYear = nYear, pYear = pYear, Seasons = Seasons, nSim = nSim, nAges = nAges,
-                sel50 = 2, selSLP = 4)
 
-om = slOM(stock = list(small, medium, large), fleet = fleet,
-          nSim = nSim, nYear = nYear, pYear = pYear, Seasons = Seasons, CurrentYear = CurrentYear,
+om = slOM(stock = stock, fleet = fleet, ComplexName = "Pacific JFS", nSim = nSim,
+          nYear = nYear, pYear = pYear, Seasons = Seasons, CurrentYear = CurrentYear,
           Interval = 6, Seed = 1)
 
 hist = Simulate(om)
+slplot(hist)
 
-
-om = slOM(stock = small, fleet = fleet,
-          nSim = nSim, nYear = nYear, pYear = pYear, Seasons = Seasons, CurrentYear = CurrentYear,
-          Interval = 6, Seed = 1)
-
+obj = hist@Data
 
 
 
