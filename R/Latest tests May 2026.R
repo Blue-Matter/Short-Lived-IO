@@ -1,3 +1,8 @@
+# ====================================================================================
+# ===== Demonstration of Sim - Sam ===================================================
+# ====================================================================================
+
+
 library(slMSE)
 packageVersion('slMSE')
 
@@ -6,13 +11,18 @@ packageVersion('slMSE')
 library(MSEtool)
 packageVersion('MSEtool')
 
-# Single substock
+
+
+# === Single substock ==========================================================
+
 om = slOM()
 hist = Simulate(om)
 slplot(hist)
 
 
-# Multi stock
+# === Multi stock ==============================================================
+
+# --- Historical Simulation --------------------------------------------
 
 nYear = 15  # No. historical years
 pYear = 15  # No. projection years
@@ -23,40 +33,30 @@ nSim = 4
 CurrentYear = 2026
 
 source("C:/GitHub/Short-Lived-IO/R/Custom_stocks.R") # Three short-lived morphs
-source("C:/GitHub/Short-Lived-IO/R/Custom_fleets.R") # Two fleets with identical fishing dynamics among morphs
+source("C:/GitHub/Short-Lived-IO/R/Custom_fleets.R") # Two fleets (identical fishing dynamics among morphs)
 
-
-om = slOM(stock = stock, fleet = fleet, ComplexName = "Pacific JFS", nSim = nSim,
-          nYear = nYear, pYear = pYear, Seasons = Seasons, CurrentYear = CurrentYear,
-          Interval = 6, Seed = 1)
+om = slOM(stock = stock, fleet = fleet, ComplexName = "Pacific JFS", 
+          nSim = nSim, nYear = nYear, pYear = pYear, Seasons = Seasons, 
+          CurrentYear = CurrentYear, Interval = 6, Seed = 1)
 
 hist = Simulate(om)
 slplot(hist)
 
-obj = hist@Data
+
+# --- Sim Testing Stock Assessment Methods ------------------------------
+
+simdata = slSimData(hist)
+
+
+
+
+
+# ====================================================================================
+# ====== END =========================================================================
+# ====================================================================================
 
 
 
 
 
 
-
-
-#mse = Project(hist, 'ECur')
-#slPlot(mse)
-
-
-
-# Multi stock with time-varying parameters
-
-# L50
-
-# M
-
-# K
-
-
-
-
-load("C:/GitHub/mahiMSE/data/smallOM.rda")
-om = smallOM
