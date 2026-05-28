@@ -56,9 +56,33 @@ slplot(simdata)
 
 library(spict)
 sim = 1
-Sdata = SPiCT_data(sim, simdata)
-Sinput = SPiCT_config(Sdata)
-fit = fit.spict(Sinput)
+
+do_spict(1,simdata)
+
+#  r.pr = c(0.5,0.2,1); bk.pr = c(0.5,0.3,1);shape.pr = c(2, 0.001, 1);oe = c(0.2, 0.5, 1);pe = c(0.2,0.5,1);fdevs = c(4, 0.5, 1);ce = c(0.05, 0.001, 1);q.pr = NULL;timing = 0.625;dteuler = 0.25
+
+do_spict=function(sim, simdata,
+                  r.pr = c(0.5,0.2,1),
+                  bk.pr = c(0.5,0.3,1),
+                  shape.pr = c(2, 0.001, 1),
+                  oe = c(0.2, 0.5, 1),
+                  pe = c(0.2,0.5,1),
+                  fdevs = c(4, 0.5, 1),
+                  ce = c(0.05, 0.001, 1),
+                  q.pr = NULL,
+                  timing = 0.625,
+                  dteuler = 0.25){
+
+  Sdata = SPiCT_data(sim, simdata)
+  Sinput = SPiCT_config(Sdata, r.pr, bk.pr, shape.pr, oe, pe, fdevs, ce,  q.pr, timing, dteuler)
+  fit = fit.spict(Sinput)
+  SPiCT_output(fit)
+
+}
+
+cbind(simdata$B[sim, ],Sout$B, Sout$B/simdata$B[sim, ])
+
+
 
 # --- JABBA ----------
 
