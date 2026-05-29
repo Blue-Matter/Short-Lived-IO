@@ -4,6 +4,7 @@
 
 # remotes::install_github("DTUAqua/spict/spict")
 # remotes::install_github("Blue-Matter/slMSE")
+# remotes::install_github("Blue-Matter/MSEtool", ref= "prelease")
 
 
 library(slMSE)
@@ -25,7 +26,7 @@ packageVersion('MSEtool')
 
 # === Multi stock ==============================================================
 
-# --- Historical Simulation --------------------------------------------
+# ---- Historical Simulation --------------------------------------------
 
 nYear = 25  # No. historical years
 pYear = 15  # No. projection years
@@ -46,32 +47,54 @@ hist = Simulate(om, doMSYRefs=T)
 slplot(hist)
 
 
-# --- Sim Testing Stock Assessment Methods ------------------------------
+# ---- Sim Testing Stock Assessment Methods ------------------------------
 
 simdata = slSimData(hist)
 slplot(simdata)
 
 
-# --- SPiCT ----------
+# ---- SPiCT ----------
 
 library(spict)
-Sout = do_spict(sim = 1, simdata)
-Sout_q = do_spict(sim = 1, simdata, timestep = "quarter", dteuler = 0.005)
+Sout = do_spict(sim = 1, simdata) # annual
 
-SS_spict = SimSam_spict(simdata, parallel =T,
-              r.pr = c(0.8,0.2,1),
-              bk.pr = c(0.5,0.3,1),
-              shape.pr = c(2, 0.001, 1),
-              oe = c(0.2, 0.5, 1),
-              pe = c(0.5, 0.5, 1),
-              fdevs = c(4, 0.5, 1),
-              ce = c(0.05, 0.001, 1),
-              q.pr = NULL,
-              timing = 0.1,
-              dteuler = 0.1)
+Sout_q = do_spict(sim = 1, simdata, timestep = "quarter", dteuler = 0.05)
+
+
+# Annually
+
+SS_spict = SimSam_spict(simdata, timestep = "year",
+                        parallel = T,
+                        r.pr = c(0.8,0.2,1),
+                        bk.pr = c(0.5,0.3,1),
+                        shape.pr = c(2, 0.001, 1),
+                        oe = c(0.2, 0.5, 1),
+                        pe = c(0.5, 0.5, 1),
+                        fdevs = c(4, 0.5, 1),
+                        ce = c(0.05, 0.001, 1),
+                        q.pr = NULL,
+                        timing = 0.01,
+                        dteuler = 0.25)
+
+
+# Quarterly
+
+SS_spict_q = SimSam_spict(simdata, timestep = "quarter",
+                        parallel = T,
+                        r.pr = c(0.8,0.2,1),
+                        bk.pr = c(0.5,0.3,1),
+                        shape.pr = c(2, 0.001, 1),
+                        oe = c(0.2, 0.5, 1),
+                        pe = c(0.5, 0.5, 1),
+                        fdevs = c(4, 0.5, 1),
+                        ce = c(0.05, 0.001, 1),
+                        q.pr = NULL,
+                        timing = 0.01,
+                        dteuler = 0.05)
 
 
 # slsumm(SS_spict)
+# you were here!!!! making quarterly bias plots...
 slplot(SS_spict)
 
 # --- JABBA ----------
