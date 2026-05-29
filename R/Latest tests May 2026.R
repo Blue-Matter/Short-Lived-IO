@@ -35,8 +35,8 @@ nAges = 8
 nSim = 24
 CurrentYear = 2026
 
-source("C:/GitHub/Short-Lived-IO/R/Custom_stocks.R") # Three short-lived morphs
-source("C:/GitHub/Short-Lived-IO/R/Custom_fleets.R") # Two fleets (identical fishing dynamics among morphs)
+stock = demo_stocks(nYear, pYear, Seasons, nSim, nAges, CurrentYear)
+fleet = demo_fleets(nYear, pYear, Seasons, nSim, nAges, stock)
 
 om = slOM(stock = stock, fleet = fleet, ComplexName = "Pacific JFS",
           nSim = nSim, nYear = nYear, pYear = pYear, Seasons = Seasons,
@@ -56,6 +56,7 @@ slplot(simdata)
 
 library(spict)
 Sout = do_spict(sim = 1, simdata)
+Sout_q = do_spict(sim = 1, simdata, timestep = "quarter", dteuler = 0.005)
 
 SS_spict = SimSam_spict(simdata, parallel =T,
               r.pr = c(0.8,0.2,1),
@@ -77,6 +78,7 @@ slplot(SS_spict)
 
 
 # --- RCM - ASPM -----
+
 
 
 # --- RCM - SCAL -----
