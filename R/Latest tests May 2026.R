@@ -76,6 +76,7 @@ SS_spict = SimSam_spict(simdata, timestep = "year",
                         timing = 0.01,
                         dteuler = 0.25)
 
+slplot(SS_spict)
 
 # Quarterly
 
@@ -95,9 +96,9 @@ SS_spict_q = SimSam_spict(simdata, timestep = "quarter",
 
 # slsumm(SS_spict)
 # you were here!!!! making quarterly bias plots...
-slplot(SS_spict)
+slplot(SS_spict_q)
 
-# --- JABBA ----------
+
 
 
 # --- RCM - ASPM -----
