@@ -4,6 +4,7 @@
 
 # Tom Carruthers
 # 29 May 2026
+# OpenMSE v2.0
 
 # A demo script showing:
 #  (A) 'made up' multistock, multifleet, seasonal, spatial simulations;
@@ -16,6 +17,7 @@
 
 # ==== Installation ============================================================
 
+install.packages('openMSE')
 remotes::install_github("Blue-Matter/MSEtool", ref= "prelease")
 remotes::install_github("Blue-Matter/slMSE")
 remotes::install_github("DTUAqua/spict/spict")
@@ -26,18 +28,19 @@ remotes::install_github("DTUAqua/spict/spict")
 library(slMSE)
 library(MSEtool)
 library(spict)
+library(ggplot2)
 
 
 # ==== A ==== Multi stock Simulation ===========================================
 
 # ---- Historical Simulation --------------------------------------------
 
-nYear = 25          # No. historical years
-pYear = 15          # No. projection years
+nYear   = 25        # No. historical years
+pYear   = 15        # No. projection years
 Seasons = 4         # time steps, subyears/seasons per year (two-monthly)
-nAreas = 3          # 3 areas used to simulate ontogeny and fleet distribution
-nAges = 8           # calculations run to 2 years
-nSim = 24           # a small number of simulations for demo purposes
+nAreas  = 3         # 3 areas used to simulate ontogeny and fleet distribution
+nAges   = 8         # calculations run to 2 years
+nSim    = 24        # a small number of simulations for demo purposes
 CurrentYear = 2026  # 'Today'
 
 # These functions invent 3-stock (phenotype), 2-fleet components
@@ -73,7 +76,7 @@ ggplot(Bplot) +                                  # Plot biomass
 
 # ==== B ==== Simulated Data ===================================================
 
-simdata = slSimData(hist)                        # Generate simulated data
+simdata = slSimData(hist)                        # Extract simulated data
 slplot(simdata)                                  # plot simulated data
 
 
@@ -132,27 +135,27 @@ slplot(SS_spict_q)                                    # plot sim sam results
 
 # One simulation
 Rout = do_RCM(1, simdata)   # fit RCM default args in ASPM model for sim 1
-plot(Rout$fit)
+plot(Rout$fit, Year = Rout$Year, f_nam = Rout$f_nam, s_name = Rout$s_name)
 
 # Sim-Sam all simulations
 SS_RCM_ASPM = SimSam_RCM(simdata, Name = "JFS demo",
-                    mode = "ASPM",
-                    c_oe = 0.05,
-                    i_oe = 0.2,
-                    ESS = 50,
-                    C_eq_fac = 1,
-                    C_eq_nyrs = 5,
-                    nsubyr = 4,
-                    R0init = 1E7,
-                    M = 0.5,
-                    Len_age = NA,
-                    Wt_age = NA,
-                    Mat_age = NA,
-                    Sel_age = NA,
-                    Steepness = 0.8,
-                    SRrel = 2,
-                    pe = 5.0,
-                    max_F = 3.0)
+                    mode = "ASPM",          # No length data, sel user specified
+                    c_oe = 0.05,            # Catch obs err (log normal sd)
+                    i_oe = 0.15,            # Index obs err
+                    ESS = 50,               # Effective sample size length comps
+                    C_eq_fac = 1,           # Ratio for Initial Equilbrm. catch
+                    C_eq_nyrs = 5,          # Initial No.Equilibrium catch years
+                    nsubyr = 4,             # A quarterly model
+                    R0init = 1E7,           # Initial guess for unfished recrmt.
+                    M = 0.5,                # Quarterly nat. mort. rate.
+                    Len_age = NA,           # These age vectors should be
+                    Wt_age = NA,            #   be specified but when set to NA
+                    Mat_age = NA,           #   the mean across all simulations
+                    Sel_age = NA,           #   and stocks is used.
+                    Steepness = 0.8,        # Steepness parameter - resilience
+                    SRrel = 2,              # Ricker stock rec rel. 1 is B-H
+                    pe = 5.0,               # Log sd penalty on rec devs (v low)
+                    max_F = 3.0)            # Maximum quarterly apical exp rate
 
 slplot(SS_RCM_ASPM)
 
@@ -165,23 +168,23 @@ plot(Rout$fit)
 
 # Sim-Sam all simulations
 SS_RCM_SCAL = SimSam_RCM(simdata, Name = "JFS demo",
-                    mode = "SCAL",
-                    c_oe = 0.05,
-                    i_oe = 0.15,
-                    ESS = 5,
-                    C_eq_fac = 1,
-                    C_eq_nyrs = 5,
-                    nsubyr = 4,
-                    R0init = 1E7,
-                    M = 0.5,
-                    Len_age = NA,
-                    Wt_age = NA,
-                    Mat_age = NA,
-                    Sel_age = NA,
-                    Steepness = 0.9,
-                    SRrel = 2,
-                    pe = 5.0,
-                    max_F = 3.0)
+                         mode = "ASPM",    # Length data, Selectivity estimated
+                         c_oe = 0.05,      # Catch obs err (log normal sd)
+                         i_oe = 0.15,      # Index obs err
+                         ESS = 50,         # Effective sample size length comps
+                         C_eq_fac = 1,     # Ratio for Initial Equilbrm. catch
+                         C_eq_nyrs = 5,    # Initial No.Equilibrium catch years
+                         nsubyr = 4,       # A quarterly model
+                         R0init = 1E7,     # Initial guess for unfished recrmt.
+                         M = 0.5,          # Quarterly nat. mort. rate.
+                         Len_age = NA,     # These age vectors should be
+                         Wt_age = NA,      #   be specified but when set to NA
+                         Mat_age = NA,     #   the mean across all simulations
+                         Sel_age = NA,     #   and stocks is used.
+                         Steepness = 0.8,  # Steepness parameter - resilience
+                         SRrel = 2,        # Ricker stock rec rel. 1 is B-H
+                         pe = 5.0,         # Log sd penalty on rec devs (v low)
+                         max_F = 3.0)      # Maximum quarterly apical exp rate
 
 slplot(SS_RCM_SCAL)
 
