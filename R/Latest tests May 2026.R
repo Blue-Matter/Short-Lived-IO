@@ -6,12 +6,12 @@
 # 29 May 2026
 # OpenMSE v2.0
 
-# A demo script showing:
-#  (A) 'made up' multistock, multifleet, seasonal, spatial simulations;
-#  (B) assessment data simulation
-#  (C) annual and seasonal surplus production assessment testing (SPiCT)
-#  (D) seasonal age-structured production model and seasonal SCAL (RCM)
-#  (E) operating model specification (RCM)
+# A script demonstrating:
+#  (A) 'Made up' multistock, multifleet, seasonal, spatial simulations;
+#  (B) Assessment data simulation
+#  (C) Annual and seasonal surplus production assessment testing (SPiCT)
+#  (D) Seasonal age-structured production model and seasonal SCAL (RCM)
+#  (E) Operating model specification (RCM)
 #  (F) MP testing
 
 
@@ -191,8 +191,8 @@ slplot(SS_RCM_SCAL)
 
 # ===== E ==== Operating Model Creation ========================================
 
-# Normally we would fit the appropriate sim tested RCM to real data
-# Here we just take the fit from simulation 1
+# Normally we would fit the appropriate sim-tested RCM to real fishery data.
+# Here we just take the fit from simulation 1 for demonstration purposes.
 
 fit = do_RCM(1, simdata, mode = "SCAL")  # Two-fleet model (length comps)
 myOM = ConvertMOM(fit@OM, Seasons = 4)   # convert to seasonal model
