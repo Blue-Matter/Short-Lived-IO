@@ -59,7 +59,6 @@ slplot(hist)                                     # plot simulated dynamics
 
 
 # Note that this operating model can be used directly to do MSE and MP testing:
-
 myMSE = Project(hist, MPs = "CurrentEffort")     # Projection - current effort
 B = Biomass(myMSE)                               # Extract Biomass
 
@@ -68,7 +67,7 @@ Bplot = do.call(data.frame,                      # Obtain quantiles
                           probs=c(0.05,0.5,0.95)))
 
 ggplot(Bplot) +                                  # Plot biomass
-  geom_ribbon(aes(x=Year,ymin = Value.5.,ymax=Value.95.),fill = "steelblue2") +
+  geom_ribbon(aes(x=Year,ymin = Value.5.,ymax=Value.95.), fill = "steelblue2") +
   geom_line(aes(y=Value.50.,x=Year)) +
   geom_vline(xintercept = myMSE@OM@CurrentYear)
 
@@ -190,16 +189,29 @@ slplot(SS_RCM_SCAL)
 
 
 
-# ===== Operating Model Creation ===============================================
+# ===== E ==== Operating Model Creation ========================================
 
 # Normally we would fit the appropriate sim tested RCM to real data
 # Here we just take the fit from simulation 1
 
-fit = do_RCM(1, simdata, mode = "ASPM")$fit
+fit = do_RCM(1, simdata, mode = "SCAL")  # Two-fleet model (length comps)
+myOM = ConvertMOM(fit@OM, Seasons = 4)   # convert to seasonal model
+hist = Simulate(myOM)                    # Historical reconstruction
 
-myOM = ConvertOM(fit@OM)
-myOM@Stock@Depletion = NULL # needed
-Project(myOM,"")
+
+# ==== F ==== MP Testing =======================================================
+
+?GIR                                     # Generic Index Ratio MP
+
+GIR2 = GIR                               # Copy Generic Index Ratio MP
+formals(GIR2)$HCR_ICP = c(0.5, 1)        # Below 50% historical index there is
+formals(GIR2)$HCR_LCP = c(0, 1)          #     zero catch, max catch 100% hist
+formals(GIR2)$HCR_up_max = 0.5           # Maximum upward adjustment of 5%
+formals(GIR2)$HCR_down_max = 0.5         # Maximum downward adjustment of 5%
+class(GIR2) = 'mp'                       # Assign correct class
+
+anMSE = Project(hist, c("GIR","GIR2"))   # Project
+slplot(anMSE)                            # Plot
 
 
 
@@ -207,19 +219,5 @@ Project(myOM,"")
 # ====== END ========================================================================
 # ===================================================================================
 
-
-
-
-
-
-
-
-
-# Appendix
-# === Single substock ==========================================================
-
-# om = slOM()
-# hist = Simulate(om)
-# slplot(hist)
 
 
