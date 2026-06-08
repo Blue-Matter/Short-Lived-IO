@@ -18,6 +18,9 @@
 # ==== Installation ============================================================
 
 install.packages('openMSE')
+install.packages('ggplot2')
+
+# Requires Rtools:
 remotes::install_github("Blue-Matter/MSEtool", ref= "prelease")
 remotes::install_github("Blue-Matter/slMSE")
 remotes::install_github("DTUAqua/spict/spict")
@@ -25,8 +28,8 @@ remotes::install_github("DTUAqua/spict/spict")
 
 # ==== Packages ================================================================
 
-library(slMSE)
-library(MSEtool)
+library(slMSE)       # v0.3.x
+library(MSEtool)     # v4.x
 library(spict)
 library(ggplot2)
 
@@ -37,7 +40,7 @@ library(ggplot2)
 
 nYear   = 25        # No. historical years
 pYear   = 15        # No. projection years
-Seasons = 4         # time steps, subyears/seasons per year (two-monthly)
+Seasons = 4         # time steps, subyears/seasons per year (quarterly)
 nAreas  = 3         # 3 areas used to simulate ontogeny and fleet distribution
 nAges   = 8         # calculations run to 2 years
 nSim    = 24        # a small number of simulations for demo purposes
@@ -58,7 +61,7 @@ slplot(hist)                                     # plot simulated dynamics
 
 
 
-# Note that this operating model can be used directly to do MSE and MP testing:
+# Note: this operating model can be used directly to do MSE and MP testing:
 myMSE = Project(hist, MPs = "CurrentEffort")     # Projection - current effort
 B = Biomass(myMSE)                               # Extract Biomass
 
@@ -81,7 +84,7 @@ slplot(simdata)                                  # plot simulated data
 
 # ==== C ==== SPiCT Sim-Sam ====================================================
 
-# ---- Annually ---------------------------------------------------------
+# ---- Annual SPiCT -----------------------------------------------------
 
 # One simulation
 Sout = do_spict(sim = 1, simdata)     # Fit spict (default settings) for sim 1
@@ -104,7 +107,7 @@ SS_spict = SimSam_spict(simdata, timestep = "year",   # annual sim sam
 slplot(SS_spict)                                      # plot sim sam results
 
 
-# ---- Quarterly --------------------------------------------------------
+# ---- Quarterly SPiCT -------------------------------------------------
 
 # One simulation
 Sout_q = do_spict(sim = 1, simdata, timestep = "quarter", dteuler = 0.05)
@@ -189,10 +192,10 @@ slplot(SS_RCM_SCAL)
 
 
 
-# ===== E ==== Operating Model Creation ========================================
+# ===== E ==== Operating Model Specification ===================================
 
 # Normally we would fit the appropriate sim-tested RCM to real fishery data.
-# Here we just take simulation 1 to demo outcomes. .
+# Here we just take simulation 1 for demonstration purposes.
 
 OM = RCM_data(1, simdata, "Fit to sim data in lieu of real data",
               M = 0.5,                # Quarterly natural mortality rate
@@ -219,17 +222,17 @@ hist = Simulate(myOM)                 # Historical reconstruction
 
 # ==== F ==== MP Testing =======================================================
 
-?GIR                                     # Generic Index Ratio MP
+?GIR                                      # Generic Index Ratio MP
 
-GIR2 = GIR                               # Copy Generic Index Ratio MP
-formals(GIR2)$HCR_ICP = c(0.5, 2)        # Below 50% historical index there is
-formals(GIR2)$HCR_LCP = c(0, 0.8)        #     zero catch, max catch 80% hist
-formals(GIR2)$HCR_up_max = 0.5           # Maximum upward adjustment of 50%
-formals(GIR2)$HCR_down_max = 0.5         # Maximum downward adjustment of 50%
-class(GIR2) = 'mp'                       # Assign correct class
+myGIR= GIR                                # Copy Generic Index Ratio MP
+formals(myGIR)$HCR_ICP = c(0.5, 2)        # Below 50% historical index there is
+formals(myGIR)$HCR_LCP = c(0, 0.8)        #     zero catch, max catch 80% hist
+formals(myGIR)$HCR_up_max = 0.5           # Maximum upward adjustment of 50%
+formals(myGIR)$HCR_down_max = 0.5         # Maximum downward adjustment of 50%
+class(myGIR) = 'mp'                       # Assign correct class
 
-anMSE = Project(hist, c("GIR","GIR2"))   # Closed-loop projections
-slplot(anMSE)                            # MSE results (some MP work needed!)
+anMSE = Project(hist, c("GIR","myGIR"))   # Closed-loop projections
+slplot(anMSE)                             # MSE results (some MP work needed!)
 
 
 # ===================================================================================
